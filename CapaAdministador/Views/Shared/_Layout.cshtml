@@ -12,7 +12,7 @@
 
 
 @* Esto es toda la pagina de la plantilla: *@
-<body>
+<body class="sb-nav-fixed">
     <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
         <!-- Navbar Brand-->
         <a class="navbar-brand ps-3" href="index.html">Start Bootstrap</a>
@@ -129,14 +129,16 @@
         </div>
     </div>
 
+
     <!-- Permite que el contenido pueda cambiar -->
     @*
         <li>@Html.ActionLink("Home", "Index", "Home")</li>
         <li>@Html.ActionLink("Acerca de", "About", "Home")</li>
         <li>@Html.ActionLink("Contacto", "Contact", "Home")</li>
     *@
-    F
+    
     @* Añadiendo los complementos *@
+
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
     @Scripts.Render("~/bundles/complements")
