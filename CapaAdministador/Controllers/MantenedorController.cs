@@ -6,19 +6,16 @@ using System.Web.Mvc;
 
 namespace CapaAdministador.Controllers
 {
-    public class HomeController : Controller
+    public class MantenedorController : Controller
     {
-        public ActionResult Index()
+        // GET: Mantenedor
+        public ActionResult Categoria()
         {
             return View();
         }
-
-        //Metodo que se manda a llamar en _Layout.cshtml
-        public ActionResult Usuarios()
+        public ActionResult Producto()
         {
             return View();
         }
-
-
     }
 }
