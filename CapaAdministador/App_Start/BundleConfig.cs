@@ -10,6 +10,8 @@ namespace CapaAdministador
         {
             bundles.Add(new Bundle("~/bundles/complements").Include(
                         "~/Scripts/scripts.js",
+                        "~/Scripts/DataTables/jquery.dataTables.js",
+                        "~/Scripts/DataTables/dataTables.responsive.js",
                         "~/Scripts/fontawesome/all.min.js"));
 
             bundles.Add(new Bundle("~/bundles/jquery").Include(
@@ -27,7 +29,11 @@ namespace CapaAdministador
             bundles.Add(new Bundle("~/bundles/bootstrap").Include(
                       "~/Scripts/bootstrap.bundle.js"));
 
-            bundles.Add(new StyleBundle("~/Content/css").Include("~/Content/site.css"));
+            bundles.Add(new StyleBundle("~/Content/css").Include(
+                "~/Content/site.css",
+                "~/Content/DataTables/css/jquery.dataTables.css",
+                "~/Content/DataTables/css/responsive.dataTables.css"
+                ));
         }
     }
 }
