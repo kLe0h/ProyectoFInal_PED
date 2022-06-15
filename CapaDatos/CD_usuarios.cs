@@ -51,8 +51,9 @@ namespace CapaDatos
                     }
                 }
 
-            } catch 
+            } catch (Exception ex)
             {
+                string error = ex.Message;
                 lista = new List<Usuario>();
             }
                 return lista;    
