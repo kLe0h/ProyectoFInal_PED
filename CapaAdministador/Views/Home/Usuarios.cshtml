@@ -18,7 +18,7 @@
         @* Colocando las filas y columnas *@
         <div class="row">
             <div class="col-12">
-                <button type="button" class="btn btn-danger" onclick="abrirModal()">
+                <button type="button" class="btn btn-danger" onclick="abrirModal(null)">
                     Crear nuevo usuario
                 </button>
             </div>
@@ -134,18 +134,33 @@
 
         });
 
-        function abrirModal()
+        function abrirModal(json)
         {
+
+
+            if (json != null)
+            {
+                $("#txtnombres").val(json.Nombres);
+                $("#txtapellidos").val(json.Apellidos);
+                $("#txtcorreo").val(json.Correo);
+                $("#cboactivo").val(json.Activo == true ? 1 : 0);
+              
+
+            }
+
             $("#formModal").modal("show");
         }
 
 
         //llamando (adentro de tbody) a un boton por medio de la clase btn-editar
-        $("#tabla tbody").on("click", 'btn-editar', function () {
+        $("#tabla tbody").on("click", '.btn-editar', function () {
             var fila_seleccionada = $(this).closest("tr")
 
             //seleccionando datos de la fila seleccionada
-            tabladata.row(fila_seleccionada).data();
+            var data = tabladata.row(fila_seleccionada).data();
+
+            abrirModal(data)
+
         })
 
     </script>
