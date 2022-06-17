@@ -36,7 +36,7 @@ namespace CapaDatos
                             lista.Add(
                                 new Categoria()
                                 {
-                                    IdCategoria = Convert.ToInt32(dr["IdUsuario"]),
+                                    IdCategoria = Convert.ToInt32(dr["IdCategoria"]),
                                     Descripcion = dr["Descripcion"].ToString(),
                                     Activo = Convert.ToBoolean(dr["Activo"])
 
