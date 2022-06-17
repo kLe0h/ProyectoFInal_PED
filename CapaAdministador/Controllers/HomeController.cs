@@ -33,6 +33,36 @@ namespace CapaAdministador.Controllers
             return Json(new { data = oLista } , JsonRequestBehavior.AllowGet);
         }
 
+        [HttpPost]
+        public JsonResult GuardarUsuario(Usuario objeto)
+        {
+            object resultado;
+            string mensaje = string.Empty;
 
+            if(objeto.IdUsuario == 0)
+            {
+                //al ser un usuario nuevo
+                resultado = new CN_usuarios().Registrar(objeto, out mensaje); //devolver ID usuario
+
+            } else
+            {
+                resultado = new CN_usuarios().Editar(objeto, out mensaje);
+            }
+            
+
+            return Json(new { resultado = resultado, mensaje = mensaje}, JsonRequestBehavior.AllowGet);
+
+        }
+
+        [HttpPost]
+        public JsonResult EliminarUsuario(int id)
+        {
+            bool respuesta = false;
+            string mensaje = string.Empty;
+
+            respuesta = new CN_usuarios().Eliminar(id, out mensaje);
+            return Json(new { resultado = respuesta, mensaje = mensaje }, JsonRequestBehavior.AllowGet);
+
+        }
     }
 }
