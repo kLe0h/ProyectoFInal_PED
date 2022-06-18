@@ -21,7 +21,7 @@ namespace CapaAdministador.Controllers
             return View();
         }
 
-        public ActionResult Restablecer(){
+        public ActionResult ReestablecerClave(){
             return View();
         }
 
@@ -82,6 +82,33 @@ namespace CapaAdministador.Controllers
                 ViewBag.Error = mensaje;
                 return View();
             }
+        }
+
+        [HttpPost]
+        public ActionResult ReestablecerClave(string correo)
+        {
+            Usuario oUsuario = new Usuario();
+            oUsuario = new CN_usuarios().Listar().Where(item => item.Correo == correo).FirstOrDefault();
+            
+            if(oUsuario == null) {
+                ViewBag.Error = "No se encontro un usuario relacionado a ese correo";
+
+            }
+
+            string mensaje = string.Empty;
+
+            bool respuesta = new CN_usuarios().ReestablecerClave(oUsuario.IdUsuario, correo, out mensaje);
+            if (respuesta){
+                return RedirectToAction("Index", "Acceso");
+            }
+            else{
+                ViewBag.Error = mensaje;
+                return View();
+            }
+        }
+
+        public ActionResult CerrarSesion(){
+            return RedirectToAction("Index", "Acceso");
         }
     }
 }
