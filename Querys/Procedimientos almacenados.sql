@@ -235,13 +235,6 @@ go
 EXEC sp_ReporteDashboard
 go
 
-select CONVERT(char(10), v.FechaVenta,10)[FechaVenta], c.Nombres, c.Apellidos,
-p.Nombre, p.Precio, dv.Cantidad, dv.Total, v.IdTransaccion
-from detalleVenta dv
-inner join producto p on p.IdProducto = dv.IdProducto
-inner join venta v on v.IdVenta = dv.IdVenta
-inner join cliente c on c.IdCliente = v.IdCliente
-go
 
 
 
