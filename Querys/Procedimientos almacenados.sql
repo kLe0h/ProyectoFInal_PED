@@ -293,3 +293,74 @@ go
 select * from detalleVenta;
 
 select * from venta;
+
+select * from usuario;
+
+select * from cliente;
+
+create proc sp_ExisteCarrito(
+@IdCliente int,
+@IdProducto int,
+@Resultado bit output
+)
+as
+begin
+	if exists(select * from carrito where IdCliente = @IdCliente and IdProducto = @IdProducto)
+		set @Resultado = 1
+	else
+		set @Resultado = 0
+end
+go
+
+create proc sp_OperacionCarrito(
+@IdCliente int,
+@IdProducto int,
+@Sumar bit,
+@Mensaje varchar(100) output,
+@Resultado bit output
+)
+as
+begin
+	set @Resultado = 1
+	set @Mensaje = ''
+
+	declare @existecarrito bit = iif(exists(select * from carrito where IdCliente = @IdCliente and IdProducto = @IdProducto), 1,0)
+	declare @stockproducto int = (select stock from producto where IdProducto = @IdProducto)
+
+	begin try
+		begin transaction operacion
+
+		if(@Sumar = 1)
+		begin
+
+			if(@stockproducto > 0)
+
+			begin
+			if(@existecarrito = 1)
+				update carrito set Cantidad = Cantidad + 1 where IdCliente = @IdCliente and IdProducto = @IdProducto
+			else
+				insert into carrito(IdCliente, IdProducto, Cantidad) values(@IdCliente, @IdProducto, 1)
+			update producto set Stock = Stock + 1 where IdProducto = @IdProducto
+			end
+			else
+			begin
+				set @Resultado = 0
+				set @Mensaje = 'El producto no cuenta con stock disponible'
+			end
+		end
+		else 
+		begin
+			update carrito set Cantidad = Cantidad - 1 where IdCliente = @IdCliente and IdProducto = @IdProducto
+			update producto set Stock = Stock + 1 where IdProducto = @IdProducto
+		end
+
+		commit transaction operacion
+
+	end try
+	begin catch
+		set @Resultado = 0
+		set @Mensaje = ERROR_MESSAGE()
+		rollback transaction operacion
+	end catch
+end
+go
