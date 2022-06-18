@@ -4,10 +4,11 @@ using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using ClosedXML.Excel;
+
 using CapaEntidad;
 using CapaNegocio;
-using ClosedXML.Excel;
-using DocumentFormat.OpenXml.Drawing.Charts;
+using System.Data;
 
 namespace CapaAdministador.Controllers
 {
@@ -93,7 +94,7 @@ namespace CapaAdministador.Controllers
 
             DataTable dt = new DataTable();
 
-            dt.Locale = new System.Globalization.CultureInfo("es-ES");
+            dt.Locale = new System.Globalization.CultureInfo("es-PE");
             dt.Columns.Add("Fecha Venta", typeof(string));
             dt.Columns.Add("Cliente", typeof(string));
             dt.Columns.Add("Producto", typeof(string));
@@ -125,6 +126,5 @@ namespace CapaAdministador.Controllers
                 }
             }
         }
-
     }
 }
