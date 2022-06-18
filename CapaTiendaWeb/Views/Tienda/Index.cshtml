@@ -29,7 +29,7 @@
                         </div>
                         <div id="contenedor_categoria" class="card-body">
 
-
+                         
 
                         </div>
                     </div>
@@ -59,7 +59,7 @@
 
             <div class="col-sm-9">
 
-                <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
+                <div id="contenedor_producto" class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
                     <div class="col mb-5">
                         <div class="card h-100">
                             <!-- Product image-->
@@ -119,3 +119,129 @@
     </div>
 </section>
 
+
+
+@section scripts{
+
+    <script>
+
+        //ejecutar cuando el documento ya este cargado
+        $(document).ready(function () {
+
+            mostrarCategorias();
+        })
+
+        $(document).on("change", "input[name=categoria]", function () {
+
+        })
+
+        function mostrarProductos(_idcategoria) {
+
+
+            jQuery.ajax({
+                url: '@Url.Action("ListarProductos", "Tienda")',
+                type: "POST",
+                data: JSON.stringify({ idcategoria: _idcategoria }),
+                dataType: "json",
+                contentType: "applicacion/json; charset=utf-8",
+                success: function (response) {
+                    $("#contenedor_producto").html("");
+                    $("#contenedor_producto").LoadingOverlay("hide");
+
+                    $.each(response.data, function (i, element) {
+
+                        $("<div>").addClass("col mb-5").append(
+                            $("<div>").addClass("card h-100").append(
+                                $("<img>").addClass("card-img-top").attr({ "src": "data:image/" + element.Extension + ";base64," + element.Base64 }),
+
+                                $("<div>").addClass("card-body p-4").append(
+                                    $("<div>").addClass("text-center").append(
+                                        $("<h5>").addClass("fw-bolder").text(element.Nombre),
+                                        "$ " + element.Precio.toFixed(2) + "USD"
+
+                                    ),
+                                    $("<div>").addClass("card-footer p-2 pt-0 border-top-0 bg-transparent").append(
+
+                                        @if (Session["Cliente"] != null)
+                                            {
+                                                @:$("<button>").addClass("btn btn-success mt-auto agregarcarrito").data("idproducto", element.IdProducto).text("Agregar a carrito"),
+
+                                            }
+                                        $("<a>").addClass("btn btn-dark mt-auto")
+                                            .attr({"href": "@Url.Action("DetalleProducto","Tienda")" + "?idproducto=" + element.IdProducto})
+                                            .text("Ver detalle")
+                                    )
+
+                                )
+                            )
+
+                        ).appendTo("#contenedor_producto")
+
+
+                    })
+                },
+                beforeSend: function () {
+                    $("#contenedor_producto").LoadingOverlay("show");
+
+                }
+
+
+            })
+
+        }
+
+        $("#btnaplicarfiltro").click(function () {
+
+            var _idcategoria = $("input[name=categoria]:checked").val()
+            mostrarProductos(_idcategoria)
+        })
+
+
+
+        function mostrarCategorias(){
+
+            jQuery.ajax({
+                url: '@Url.Action("ListaCategorias", "Tienda")',
+                type: "GET",
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success: function (response) {
+                    //<div class="form-check">
+                    //    <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
+                    //        <label class="form-check-label" for="flexRadioDefault1">
+                    //            Default radio
+                    //        </label>
+                    //</div>
+
+                    $("#contenedor_categoria").LoadingOverlay("hide");
+
+                    $("<div>").addClass("form-check").append(
+
+                        $("<input>").addClass("form-check-input").attr({ "type": "radio", "name": "categoria", "value": "0", "id": "cx", "checked": "checked" }),
+                        $("<label>").addClass("form-check-label").text("Todos").attr({"for":"cx"})
+
+                    ).appendTo("#contenedor_categoria")
+
+                    $.each(response.data, function (i, element) {
+
+                        $("<div>").addClass("form-check").append(
+
+                            $("<input>").addClass("form-check-input").attr({ "type": "radio", "name": "categoria", "value": element.IdCategoria, "id": "c" + i }),
+                            $("<label>").addClass("form-check-label").text(element.Descripcion).attr({ "for": "c" + i })
+
+                        ).appendTo("#contenedor_categoria")
+                    })
+
+                },
+                beforeSend: function () {
+
+                    $("#contenedor_categoria").LoadingOverlay("show");
+
+                }
+            })
+
+        }
+
+    </script>
+
+}

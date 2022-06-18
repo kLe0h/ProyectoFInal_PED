@@ -5,6 +5,7 @@ using System.Web;
 using System.Web.Mvc;
 using CapaEntidad;
 using CapaNegocio;
+using System.IO;
 
 namespace CapaTiendaWeb.Controllers
 {
@@ -22,9 +23,42 @@ namespace CapaTiendaWeb.Controllers
         {
             List<Categoria> lista = new List<Categoria>();
 
-            ListaCategorias = new CN_Categoria().Listar();
+            lista = new CN_Categoria().Listar();
 
-            return Json(new { date = lista }, JsonRequestBehavior.AllowGet);
+           return Json(new { data = lista }, JsonRequestBehavior.AllowGet);
         }
+
+       [HttpPost]
+       public JsonResult ListarProductos(int idcategoria)
+        {
+            List<Producto> lista = new List<Producto>();
+
+            bool conversion;
+
+            lista = new CN_Producto().Listar().Select(p => new Producto()
+            {
+                IdProducto = p.IdProducto,
+                Nombre = p.Nombre,
+                Descripcion = p.Descripcion,
+                oCategoria = p.oCategoria,
+                Precio = p.Precio,
+                Stock = p.Stock,
+                RutaImagen = p.RutaImagen,
+                Base64 = CN_Recursos.ConvertirBase64(Path.Combine(p.RutaImagen, p.NombreImagen), out conversion),
+                Extension = Path.GetExtension(p.NombreImagen),
+                Activo = p.Activo
+
+            }).Where(p =>
+               p.oCategoria.IdCategoria == (idcategoria == 0 ? p.oCategoria.IdCategoria : idcategoria) &&
+               p.Stock > 0 && p.Activo == true
+               ).ToList();
+
+            var jsonresult = Json(new { data = lista }, JsonRequestBehavior.AllowGet);
+            jsonresult.MaxJsonLength = int.MaxValue;
+
+            return jsonresult;
+        }
+
+
     }
 }
