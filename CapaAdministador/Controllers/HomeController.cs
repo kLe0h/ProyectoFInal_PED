@@ -4,10 +4,11 @@ using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using ClosedXML.Excel;
+
 using CapaEntidad;
 using CapaNegocio;
-using ClosedXML.Excel;
-using DocumentFormat.OpenXml.Drawing.Charts;
+using System.Data;
 
 namespace CapaAdministador.Controllers
 {
@@ -125,6 +126,5 @@ namespace CapaAdministador.Controllers
                 }
             }
         }
-
     }
 }
