@@ -137,9 +137,9 @@
             });
 
         var Url ='@Url.Action("ListaReporte","Home")' +
-        "?fechaInicio" + $("#txtFechaInicio").val +
-        "&fechaFin" + $("#txtFechaFin").val +
-        "&idTransaccion" + $("#txtIdTransaccion").val
+        "?fechaInicio" + $("#txtFechaInicio").val() +
+        "&fechaFin" + $("#txtFechaFin").val() +
+        "&idTransaccion" + $("#txtIdTransaccion").val()
 
         //haciendo el llamado a la tabla por medio del id #{nombre}
             //convertir a dataTable
@@ -158,24 +158,7 @@
                     { "data": "Precio" },
                     { "data": "Cantidad"},
                     { "data": "Total" },
-                    { "data": "idTransaccion" },
-                    {
-                        "data": "Activo", "render": function (valor) {
-                            if (valor) {
-                                return '<span class="badge bg-success">Si</span>'
-                            } else {
-                                return '<span class="badge bg-danger">No</span>'
-                            }
-                        }
-                    },
-                    {
-                        "defaultContent": '<button type="button" class="btn btn-primary btn-sm btn-editar"><i class="fas fa-pen me-1"></i></button>' +
-                            '<button type="button" class="btn btn-danger btn-sm ms-2 btn-eliminar"><i class="fas fa-trash me-1"></i></button>',
-                        "orderable": false,
-                        "searchable": false
-
-                    }
-
+                    { "data": "idTransaccion" }
 
                 ],
 
@@ -183,7 +166,16 @@
                 "language": {
                     "url":"https://cdn.datatables.net/plug-ins/1.12.1/i18n/es-ES.json"
                 }
-
             });
+        })
+
+        $("#btnBuscar").on("click", function () {
+            var Url ='@Url.Action("ListaReporte","Home")' +
+            "?fechaInicio" + $("#txtFechaInicio").val() +
+            "&fechaFin" + $("#txtFechaFin").val() +
+            "&idTransaccion" + $("#txtIdTransaccion").val()
+
+            tabladata.ajax.url(nueva_url).load();
+        })
     </script>
 }
