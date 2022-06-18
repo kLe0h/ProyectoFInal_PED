@@ -70,7 +70,7 @@ namespace CapaAdministador.Controllers
         public JsonResult ListaReporte(string fechaInicio, string fechFin, string idTransaccion){
             List<Reporte> oLista = new List<Reporte>();
 
-            oLista = new CN_Reporte().Ventas(fechaInicio, fechFin, idTransaccion);
+            oLista = new CN_Reporte().Venta(fechaInicio, fechFin, idTransaccion);
 
             return Json(new { data = oLista }, JsonRequestBehavior.AllowGet);
         }
