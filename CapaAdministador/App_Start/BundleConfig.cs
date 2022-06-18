@@ -15,6 +15,7 @@ namespace CapaAdministador
                         "~/Scripts/loadingoverlay/loadingoverlay.min.js",
                         "~/Scripts/sweetalert.min.js",
                         "~/Scripts/jquery.validate.js",
+                        "~/Scripts/jquery-ui.js",
                         "~/Scripts/fontawesome/all.min.js"));
 
             bundles.Add(new Bundle("~/bundles/jquery").Include(
@@ -36,6 +37,7 @@ namespace CapaAdministador
                 "~/Content/site.css",
                 "~/Content/DataTables/css/jquery.dataTables.css",
                 "~/Content/DataTables/css/responsive.dataTables.css",
+                "~/Content/jquery-ui.css",
                 "~/Content/sweetalert.css"
                 ));
         }
