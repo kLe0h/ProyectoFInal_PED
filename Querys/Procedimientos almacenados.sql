@@ -1,6 +1,8 @@
 use ProyectoPED_FaseFinal;
 go
 
+
+
 select * from producto;
 go
 
@@ -217,6 +219,8 @@ from producto p
 inner join categoria c on c.IdCategoria = p.IdCategoria
 go
 
+-- REPORTES ALMACENADOS DASHBOARD --
+
 CREATE PROC sp_ReporteDashboard
 AS
 BEGIN
@@ -226,6 +230,18 @@ SELECT
 	(SELECT COUNT(*)FROM producto)[totalProducto]
 END
 
-EXEC sp_ReporteDashboard
+go
 
-select * from categoria;
+EXEC sp_ReporteDashboard
+go
+
+select CONVERT(char(10), v.FechaVenta,10)[FechaVenta], c.Nombres, c.Apellidos,
+p.Nombre, p.Precio, dv.Cantidad, dv.Total, v.IdTransaccion
+from detalleVenta dv
+inner join producto p on p.IdProducto = dv.IdProducto
+inner join venta v on v.IdVenta = dv.IdVenta
+inner join cliente c on c.IdCliente = v.IdCliente
+go
+
+
+
