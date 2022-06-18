@@ -80,7 +80,8 @@ namespace CapaTiendaWeb.Controllers
                 {
                     TempData["IdCliente"] = oCliente.IdCliente;
                     return RedirectToAction("CambiarClave", "Acceso");
-                } else
+                } 
+                else
                 {
                     FormsAuthentication.SetAuthCookie(oCliente.Correo, false);
 
@@ -172,6 +173,7 @@ namespace CapaTiendaWeb.Controllers
         
         public ActionResult CerrarSesion()
         {
+            Session["Cliente"] = null;
             FormsAuthentication.SignOut();
             return RedirectToAction("Index", "Acceso");
         }
