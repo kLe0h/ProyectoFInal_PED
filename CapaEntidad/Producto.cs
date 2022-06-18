@@ -15,6 +15,9 @@ namespace CapaEntidad
         public Categoria oCategoria { get; set; } //Esto hace referencia a la clase Categoria,
         //Como si fuese una tabla relacional.
         public decimal Precio { get; set; }
+        public string PrecioTexto { get; set; }
+        public string Base64 { get; set; }
+        public string Extension { get; set; }
         public int Stock { get; set; }
         public string RutaImagen { get; set; }
         public string NombreImagen { get; set; }

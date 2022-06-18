@@ -64,5 +64,14 @@ namespace CapaAdministador.Controllers
             return Json(new { resultado = respuesta, mensaje = mensaje }, JsonRequestBehavior.AllowGet);
 
         }
+
+        //url que devuelve datos sin necesitar valores
+        [HttpGet]
+        public JsonResult VistaDashBoard(){
+            DashBoard objeto = new CN_Reporte().VerDashboard();
+
+            return Json(new { resultado = objeto }, JsonRequestBehavior.AllowGet);
+        }
+
     }
 }

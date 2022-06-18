@@ -107,7 +107,7 @@
         tabladata = $("#tabla").DataTable({
             responsive: true,
             ordering: false,
-            "ajax": {   
+            "ajax": {
                 url: '@Url.Action("ListarCategorias", "Mantenedor")',
                 type: "GET",
                 dataType: "json"
@@ -139,23 +139,83 @@
         });
 
 
+         //llamando (adentro de tbody) a un boton por medio de la clase btn-editar
+        $("#tabla tbody").on("click", '.btn-editar', function () {
+            fila_seleccionada = $(this).closest("tr")
+
+            //seleccionando datos de la fila seleccionada
+            var data = tabladata.row(fila_seleccionada).data();
+
+            console.log(data)
+
+            abrirModal(data)
+
+        })
 
 
+        //EVENTO ELIMINAR
+        $("#tabla tbody").on("click", '.btn-eliminar', function () {
+            var categoria_seleccionada = $(this).closest("tr")
+
+            //seleccionando datos de la fila seleccionada
+            var data = tabladata.row(categoria_seleccionada).data();
+
+
+            swal({
+                title: "¿Estás seguro?",
+                text: "¿Quieres eliminar esta categoría?",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonClass: "btn-primary",
+                confirmButtonText: "Sí, borralo",
+                cancelButtonText: "No",
+                closeOnConfirm: true
+            },
+            function () {
+
+                jQuery.ajax({
+
+                    url: '@Url.Action("EliminarCategoria", "Mantenedor")',
+                    type: "POST",
+                    data: JSON.stringify({ id: data.IdCategoria }),
+                    dataType: "json",
+                    contentType: "application/json; charset=utf-8",
+                    success: function (data) {
+
+                        
+                        if (data.resultado) {
+
+                            tabladata.row(categoria_seleccionada).remove().draw();
+
+                        } else {
+
+                            swal("No se pudo eliminar la categoria", data.mensaje, "error")
+
+                        }
+
+                    },
+                    error: function (error) {
+                        console.log(error)
+                    },
+
+                });
+
+            });
+
+        })
+
+        //FUNCIÓN ABRIR MODAL
         function abrirModal(json)
         {
             $("#txtid").val(0);
-            $("#txtnombres").val("");
-            $("#txtapellidos").val("");
-            $("#txtcorreo").val("");
+            $("#txtdescripcion").val("");
             $("#cboactivo").val(1);
             $("#mensajeError").hide();
 
             if (json != null)
             {
-                $("#txtid").val(json.IdUsuario);
-                $("#txtnombres").val(json.Nombres);
-                $("#txtapellidos").val(json.Apellidos);
-                $("#txtcorreo").val(json.Correo);
+                $("#txtid").val(json.IdCategoria);
+                $("#txtdescripcion").val(json.Descripcion);
                 $("#cboactivo").val(json.Activo == true ? 1 : 0);
 
             }
@@ -166,20 +226,18 @@
         //funcion para enviar datos a SQL Server y actualizar datos
         function guardar() {
 
-            var usuario = {
-                IdUsuario: $("#txtid").val(),
+            var Categoria = {
+                IdCategoria: $("#txtid").val(),
+                Descripcion: $("#txtdescripcion").val(),
                 Activo: $("#cboactivo").val() == 1 ? true : false,
-                Apellidos: $("#txtapellidos").val(),
-                Correo: $("#txtcorreo").val(),
-                Nombres: $("#txtnombres").val()
 
             }
 
             jQuery.ajax({
 
-                url: '@Url.Action("GuardarUsuario", "Home")',
+                url: '@Url.Action("GuardarCategoria", "Mantenedor")',
                 type: "POST",
-                data: JSON.stringify({ objeto: usuario }),
+                data: JSON.stringify({ objeto: Categoria }),
                 dataType: "json",
                 contentType: "application/json; charset=utf-8",
                 success: function (data) {
@@ -187,13 +245,13 @@
                     $(".modal-body").LoadingOverlay("hide");
 
 
-                    //Usuario nuevo
-                    if (usuario.IdUsuario == 0) {
+                    //Cateogria nuevo
+                    if (Categoria.IdCategoria == 0) {
 
                         if (data.resultado != 0) {
 
-                            usuario.IdUsuario = data.resultado;
-                            tabladata.row.add(usuario).draw(false);
+                            Categoria.IdCategoria = data.resultado;
+                            tabladata.row.add(Categoria).draw(false);
 
                             //Despues de esto ocultar el modal
                             $("#formModal").modal("hide");
@@ -204,11 +262,11 @@
 
                         }
 
-                        //Editar usuario
+                        //Editar categoria
                     } else {
 
                         if (data.resultado) {
-                            tabladata.row(fila_seleccionada).data(usuario).draw(false);
+                            tabladata.row(fila_seleccionada).data(Categoria).draw(false);
                             fila_seleccionada = null;
                             $("#formModal").modal("hide");
                         } else {
@@ -241,77 +299,7 @@
 
         }
 
-        //llamando (adentro de tbody) a un boton por medio de la clase btn-editar
-        $("#tabla tbody").on("click", '.btn-editar', function () {
-            fila_seleccionada = $(this).closest("tr")
 
-            //seleccionando datos de la fila seleccionada
-            var data = tabladata.row(fila_seleccionada).data();
-
-
-            console.log(data)
-
-            abrirModal(data)
-
-        })
-
-
-        //EVENTO ELIMINAR
-        $("#tabla tbody").on("click", '.btn-eliminar', function () {
-            var usuario_seleccionado = $(this).closest("tr")
-
-            //seleccionando datos de la fila seleccionada
-            var data = tabladata.row(usuario_seleccionado).data();
-
-
-            swal({
-                title: "¿Estás seguro?",
-                text: "¿Quieres eliminar este usuario?",
-                type: "warning",
-                showCancelButton: true,
-                confirmButtonClass: "btn-primary",
-                confirmButtonText: "Sí, borralo",
-                cancelButtonText: "No",
-                closeOnConfirm: true
-            },
-            function () {
-
-
-                jQuery.ajax({
-
-                    url: '@Url.Action("EliminarUsuario","Home")',
-                    type: "POST",
-                    data: JSON.stringify({ id: data.IdUsuario }),
-                    dataType: "json",
-                    contentType: "application/json; charset=utf-8",
-                    success: function (data) {
-
-                        debugger;
-                        if (data.resultado) {
-
-                            tabladata.row(usuario_seleccionado).remove().draw();
-
-                        } else {
-
-                            swal("No se pudo eliminar el usuario", data.mensaje, "error")
-
-                        }
-
-                    },
-                    error: function (error) {
-                        console.log(error)
-                    },
-
-
-                });
-
-
-
-
-            });
-
-
-        })
 
     </script>
 }

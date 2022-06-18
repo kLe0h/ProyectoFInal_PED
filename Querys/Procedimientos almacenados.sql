@@ -1,12 +1,10 @@
-
-
 use ProyectoPED_FaseFinal;
-
 go
 
-select * from usuario;
+select * from producto;
+go
 
--- Creando el procedimiento almacenado para registrar un usuario
+-- PROCEDIMIENTOS ALMACENADOS USUARIOS
 create proc sp_RegistrarUsuario(
 @Nombres varchar(100),
 @Apellidos varchar(100),
@@ -31,7 +29,6 @@ begin
 	ELSE
 		set @Mensaje = 'El correo del usuario ya existe'
 end
-
 go
 
 create proc sp_EditarUsuario(
@@ -66,7 +63,7 @@ end
 
 go
 
-
+-- PROCEDIMIENTOS ALMACENADOS CATEGORIA
 create proc sp_RegistrarCategoria(
 @Descripcion varchar(100),
 @Activo bit,
@@ -84,6 +81,7 @@ begin
 	else 
 		set @Mensaje = 'La categoria ya existe'
 end
+
 go
 
 create proc sp_EditarCategoria(
@@ -108,7 +106,6 @@ begin
 	else
 		set @Mensaje = 'La categoria ya existe'
 end
-
 go
 
 
@@ -130,3 +127,105 @@ begin
 		set @Mensaje = 'La categoria se encuentra relacionada a un producto'
 end
 go
+
+--PROCEDIMIENTOS ALMACENADOS PRODUCTOS (AUN NO ESTAN EJECUTADOS - 1:17PM)
+
+create proc sp_RegistrarProducto(
+@Nombre varchar (100),
+@Descripcion varchar (100),
+@IdCategoria varchar(100),
+@Precio decimal(10,2),
+@Stock int,
+@Activo bit,
+@Mensaje varchar(100) output,
+@Resultado int output
+)
+AS
+begin
+	SET @Resultado = 0
+	IF NOT EXISTS(SELECT * FROM producto WHERE Nombre = @Nombre)
+	begin
+		insert into producto(Nombre, Descripcion, IdCategoria, Precio, Stock, Activo) values
+		(@Nombre, @Descripcion, @IdCategoria, @Precio, @Stock, @Activo)
+
+		set @Resultado = SCOPE_IDENTITY()
+	end
+	else 
+		set @Mensaje = 'El producto ya existe'
+end
+go
+
+create proc sp_EditarProducto(
+@IdProducto int,
+@Nombre varchar (100),
+@Descripcion varchar (100),
+@IdCategoria varchar(100),
+@Precio decimal(10,2),
+@Stock int,
+@Activo bit,
+@Mensaje varchar(100) output,
+@Resultado int output
+)
+AS
+begin
+	set @Resultado = 0
+	IF NOT EXISTS (select * from producto where Nombre = @Nombre and IdProducto != @IdProducto)
+	begin
+
+		update producto set
+		Nombre = @Nombre,
+		Descripcion = @Descripcion,
+		IdCategoria = @IdCategoria,
+		Precio = @Precio,
+		Stock = @Stock,
+		Activo = @Activo
+		where IdProducto = @IdProducto
+
+		set @Resultado = 1
+	end
+	else
+		set @Mensaje = 'El producto ya existe'
+end
+go
+
+
+create proc sp_EliminarProducto(
+@IdProducto int,
+@Mensaje varchar(500) output,
+@Resultado bit output
+)
+as
+begin
+	set @Resultado = 0
+	IF NOT EXISTS (select * from detalleVenta dv 
+	inner join producto p on p.IdProducto = dv.IdProducto 
+	where p.IdProducto = @IdProducto)
+	begin
+		delete top (1) from producto where IdProducto = @IdProducto
+		set @Resultado = 1
+	end
+	else
+		set @Mensaje = 'El producto se encuentra relacionado a una venta'
+end
+go
+
+
+select p.IdProducto, p.Nombre, p.Descripcion,
+c.IdCategoria, c.Descripcion[DesCategoria],
+p.Precio, p.Stock, p.RutaImagen, p.NombreImagen, p.Activo
+from producto p
+inner join categoria c on c.IdCategoria = p.IdCategoria
+go
+
+CREATE PROC sp_ReporteDashboard
+AS
+BEGIN
+SELECT 
+	(SELECT COUNT(*) FROM cliente)[totalCliente],
+	(SELECT ISNULL(SUM(Cantidad),0) FROM detalleVenta)[totalVenta],
+	(SELECT COUNT(*)FROM producto)[totalProducto]
+END
+
+EXEC sp_ReporteDashboard
+
+select * from categoria;
