@@ -5,7 +5,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using ClosedXML.Excel;
-
+using System.Web.Security;
 using CapaEntidad;
 using CapaNegocio;
 
@@ -42,6 +42,8 @@ namespace CapaAdministador.Controllers
                     return RedirectToAction("CambiarClave");
                 }
 
+                FormsAuthentication.SetAuthCookie(oUsuario.Correo, false);
+
                 ViewBag.Error = null;
 
                 return RedirectToAction("Index","Home");
@@ -70,7 +72,7 @@ namespace CapaAdministador.Controllers
             }
 
             ViewData["vclave"] = "";
-            nuevaClave = CN_Recursos.ConvertirSHA256(claveActual);
+            nuevaClave = CN_Recursos.ConvertirSHA256(nuevaClave);
             
             string mensaje = string.Empty;
 
@@ -108,6 +110,7 @@ namespace CapaAdministador.Controllers
         }
 
         public ActionResult CerrarSesion(){
+            FormsAuthentication.SignOut();
             return RedirectToAction("Index", "Acceso");
         }
     }

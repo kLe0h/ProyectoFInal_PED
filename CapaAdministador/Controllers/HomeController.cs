@@ -12,6 +12,7 @@ using System.Data;
 
 namespace CapaAdministador.Controllers
 {
+    [Authorize]
     public class HomeController : Controller
     {
         public ActionResult Index()
