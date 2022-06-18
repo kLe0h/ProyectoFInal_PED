@@ -134,20 +134,21 @@
                         $("#totalVenta").text(objeto.totalVenta)
                         $("#totalProducto").text(objeto.totalProducto)
                     }
-            });
+                }
+            );
+       
+            var Url ='@Url.Action("ListaReporte","Home")' +
+            "?fechaInicio=" + $("#txtFechaInicio").val() +
+            "&fechaFin=" + $("#txtFechaFin").val() +
+            "&idTransaccion=" + $("#txtIdTransaccion").val()
 
-        var Url ='@Url.Action("ListaReporte","Home")' +
-        "?fechaInicio" + $("#txtFechaInicio").val() +
-        "&fechaFin" + $("#txtFechaFin").val() +
-        "&idTransaccion" + $("#txtIdTransaccion").val()
-
-        //haciendo el llamado a la tabla por medio del id #{nombre}
+            //haciendo el llamado a la tabla por medio del id #{nombre}
             //convertir a dataTable
             tabladata = $("#tabla").DataTable({
                 responsive: true,
                 ordering: false,
                 "ajax": {
-                    url: '@Url.Action("VistaDashBoard", "Home")',,
+                    url: Url,
                     type: "GET",
                     dataType: "json"
                 },
@@ -159,9 +160,7 @@
                     { "data": "Cantidad"},
                     { "data": "Total" },
                     { "data": "idTransaccion" }
-
                 ],
-
                 //Cambiar lenguaje a español
                 "language": {
                     "url":"https://cdn.datatables.net/plug-ins/1.12.1/i18n/es-ES.json"
@@ -170,7 +169,8 @@
         })
 
         $("#btnBuscar").on("click", function () {
-            var Url ='@Url.Action("ListaReporte","Home")' +
+
+            var nueva_url = '@Url.Action("ListaReporte","Home")' +
             "?fechaInicio" + $("#txtFechaInicio").val() +
             "&fechaFin" + $("#txtFechaFin").val() +
             "&idTransaccion" + $("#txtIdTransaccion").val()
