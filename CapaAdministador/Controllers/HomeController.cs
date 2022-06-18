@@ -85,7 +85,7 @@ namespace CapaAdministador.Controllers
             return Json(new { resultado = objeto }, JsonRequestBehavior.AllowGet);
         }
 
-        [HttpPost]
+         [HttpPost]
         public FileResult ExportarVenta(string fechaInicio, string fechFin, string idTransaccion){
 
             List<Reporte> oLista = new List<Reporte>();
@@ -93,7 +93,7 @@ namespace CapaAdministador.Controllers
 
             DataTable dt = new DataTable();
 
-            dt.Locale = new System.Globalization.CultureInfo("es-ES");
+            dt.Locale = new System.Globalization.CultureInfo("es-PE");
             dt.Columns.Add("Fecha Venta", typeof(string));
             dt.Columns.Add("Cliente", typeof(string));
             dt.Columns.Add("Producto", typeof(string));
@@ -106,7 +106,7 @@ namespace CapaAdministador.Controllers
                 dt.Rows.Add(new object[]{
                     rp.FechaVenta,
                     rp.Cliente,
-                    rp.Producto,
+                  rp.Producto,
                     rp.Precio,
                     rp.Cantidad,
                     rp.Total,

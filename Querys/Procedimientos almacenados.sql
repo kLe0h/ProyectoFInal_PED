@@ -283,8 +283,14 @@ end
 go
 
 
+declare @idcategoria int = 0
 
+select distinct c.IdCategoria, c.Descripcion from producto p
+inner join categoria c on c.IdCategoria = p.IdCategoria and c.Activo = 1
+where c.IdCategoria = iif(@idcategoria = 0, c.IdCategoria, @idcategoria)
+go
 
+select * from categoria;
 
 
 
