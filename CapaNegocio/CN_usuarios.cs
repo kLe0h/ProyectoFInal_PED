@@ -64,13 +64,9 @@ namespace CapaNegocio
 
               
             } 
-            
-            else
-            {
+            else{
                 return 0;
             }
-
-            
         }
 
         public bool Editar(Usuario obj, out string Mensaje)
@@ -105,6 +101,39 @@ namespace CapaNegocio
         public bool Eliminar(int id, out string Mensaje)
         {
             return objCapaDato.Eliminar(id, out Mensaje);
+        }
+
+        public bool CambiarClave(int idUsuario, string nuevaClave, out string Mensaje)
+        {
+            return objCapaDato.CambiarClave(idUsuario,nuevaClave, out Mensaje);
+        }
+
+        public bool ReestablecerClave(int idUsuario, string correo, out string Mensaje){
+
+            Mensaje = String.Empty;
+            string nuevaClave = CN_Recursos.generarClave();
+            bool resultado = objCapaDato.ReestablecerClave(idUsuario,CN_Recursos.ConvertirSHA256(nuevaClave), out Mensaje);
+
+            if (resultado){
+                string asunto = "Constraseña temporal";
+                string mensaje_correo = "<h3>Su contraseña fue reestablecida correctamente</h3></br><p>Bienvenido al sitio web de PastriesLand! Su clave es: !clave!</p>";
+                mensaje_correo = mensaje_correo.Replace("!clave!", nuevaClave);
+
+                bool respuesta = CN_Recursos.enviarCorreo(correo, asunto, mensaje_correo);
+                
+                if (respuesta){
+
+                    return true;
+                }
+                else{
+                    Mensaje = "No se pudo enviar el correo";
+                    return false;
+                }
+            }
+            else{
+                Mensaje = "No se pudo reestablecer la contraseña";
+                return false;
+            }
         }
     }
 }
