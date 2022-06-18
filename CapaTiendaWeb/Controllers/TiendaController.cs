@@ -29,7 +29,7 @@ namespace CapaTiendaWeb.Controllers
         }
 
        [HttpPost]
-       public JsonResult ListarProductos(int idcategoria)
+       public JsonResult ListarProducto(int idcategoria)
         {
             List<Producto> lista = new List<Producto>();
 
@@ -48,10 +48,8 @@ namespace CapaTiendaWeb.Controllers
                 Extension = Path.GetExtension(p.NombreImagen),
                 Activo = p.Activo
 
-            }).Where(p =>
-               p.oCategoria.IdCategoria == (idcategoria == 0 ? p.oCategoria.IdCategoria : idcategoria) &&
-               p.Stock > 0 && p.Activo == true
-               ).ToList();
+            }).Where(p => p.oCategoria.IdCategoria == (idcategoria == 0 ? p.oCategoria.IdCategoria : idcategoria) &&
+            p.Stock > 0 && p.Activo == true).ToList();
 
             var jsonresult = Json(new { data = lista }, JsonRequestBehavior.AllowGet);
             jsonresult.MaxJsonLength = int.MaxValue;

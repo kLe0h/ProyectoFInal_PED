@@ -290,8 +290,6 @@ inner join categoria c on c.IdCategoria = p.IdCategoria and c.Activo = 1
 where c.IdCategoria = iif(@idcategoria = 0, c.IdCategoria, @idcategoria)
 go
 
-select * from categoria;
+select * from detalleVenta;
 
-
-
-
+select * from venta;
