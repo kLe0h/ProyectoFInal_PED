@@ -108,8 +108,6 @@
         var tabladata;
         var fila_seleccionada;
 
-
-
         //haciendo el llamado a la tabla por medio del id #{nombre}
         //convertir a dataTable
         tabladata = $("#tabla").DataTable({
@@ -138,21 +136,14 @@
                         '<button type="button" class="btn btn-danger btn-sm ms-2 btn-eliminar"><i class="fas fa-trash me-1"></i></button>',
                     "orderable": false,
                     "searchable": false
-
                 }
-
-
             ],
 
             //Cambiar lenguaje a español
             "language": {
                 "url":"https://cdn.datatables.net/plug-ins/1.12.1/i18n/es-ES.json"
             }
-
         });
-
-
-
 
         function abrirModal(json)
         {
@@ -170,7 +161,6 @@
                 $("#txtapellidos").val(json.Apellidos);
                 $("#txtcorreo").val(json.Correo);
                 $("#cboactivo").val(json.Activo == true ? 1 : 0);
-
             }
 
             $("#formModal").modal("show");
@@ -185,7 +175,6 @@
                 Apellidos: $("#txtapellidos").val(),
                 Correo: $("#txtcorreo").val(),
                 Nombres: $("#txtnombres").val()
-
             }
 
             jQuery.ajax({
@@ -228,11 +217,7 @@
                             $("#mensajeError").text(data.mensaje);
                             $("#mensajeError").show();
                         }
-
-
                     }
-
-
                 },
                 error: function (error) {
 
@@ -261,13 +246,11 @@
             //seleccionando datos de la fila seleccionada
             var data = tabladata.row(fila_seleccionada).data();
 
-
             console.log(data)
 
             abrirModal(data)
 
         })
-
 
         //EVENTO ELIMINAR
         $("#tabla tbody").on("click", '.btn-eliminar', function () {
@@ -275,7 +258,6 @@
 
             //seleccionando datos de la fila seleccionada
             var data = tabladata.row(usuario_seleccionado).data();
-
 
             swal({
                 title: "¿Estás seguro?",
@@ -288,7 +270,6 @@
                 closeOnConfirm: true
             },
             function () {
-
 
                 jQuery.ajax({
 
@@ -314,17 +295,8 @@
                     error: function (error) {
                         console.log(error)
                     },
-                    
-
                 });
-
-
-
-
             });
-
-
         })
-
     </script>
 }
