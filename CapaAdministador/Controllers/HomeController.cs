@@ -26,14 +26,14 @@ namespace CapaAdministador.Controllers
         }
 
         //url que devuelve datos sin necesitar valores
-        [HttpGet] 
+        [HttpGet]
         public JsonResult ListUsuarios()
         {
             List<Usuario> oLista = new List<Usuario>();
-            
+
             oLista = new CN_usuarios().Listar();
 
-            return Json(new { data = oLista } , JsonRequestBehavior.AllowGet);
+            return Json(new { data = oLista }, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
@@ -42,18 +42,19 @@ namespace CapaAdministador.Controllers
             object resultado;
             string mensaje = string.Empty;
 
-            if(objeto.IdUsuario == 0)
+            if (objeto.IdUsuario == 0)
             {
                 //al ser un usuario nuevo
                 resultado = new CN_usuarios().Registrar(objeto, out mensaje); //devolver ID usuario
 
-            } else
+            }
+            else
             {
                 resultado = new CN_usuarios().Editar(objeto, out mensaje);
             }
-            
 
-            return Json(new { resultado = resultado, mensaje = mensaje}, JsonRequestBehavior.AllowGet);
+
+            return Json(new { resultado = resultado, mensaje = mensaje }, JsonRequestBehavior.AllowGet);
 
         }
 
@@ -70,7 +71,8 @@ namespace CapaAdministador.Controllers
 
         //url que devuelve datos sin necesitar valores
         [HttpGet]
-        public JsonResult ListaReporte(string fechaInicio, string fechFin, string idTransaccion){
+        public JsonResult ListaReporte(string fechaInicio, string fechFin, string idTransaccion)
+        {
             List<Reporte> oLista = new List<Reporte>();
 
             oLista = new CN_Reporte().Venta(fechaInicio, fechFin, idTransaccion);
@@ -80,14 +82,16 @@ namespace CapaAdministador.Controllers
 
         //url que devuelve datos sin necesitar valores
         [HttpGet]
-        public JsonResult VistaDashBoard(){
+        public JsonResult VistaDashBoard()
+        {
             DashBoard objeto = new CN_Reporte().VerDashboard();
 
             return Json(new { resultado = objeto }, JsonRequestBehavior.AllowGet);
         }
 
-         [HttpPost]
-        public FileResult ExportarVenta(string fechaInicio, string fechFin, string idTransaccion){
+        [HttpPost]
+        public FileResult ExportarVenta(string fechaInicio, string fechFin, string idTransaccion)
+        {
 
             List<Reporte> oLista = new List<Reporte>();
             oLista = new CN_Reporte().Venta(fechaInicio, fechFin, idTransaccion);
@@ -103,11 +107,12 @@ namespace CapaAdministador.Controllers
             dt.Columns.Add("Total", typeof(decimal));
             dt.Columns.Add("IdTransaccion", typeof(string));
 
-            foreach(Reporte rp in oLista){
+            foreach (Reporte rp in oLista)
+            {
                 dt.Rows.Add(new object[]{
                     rp.FechaVenta,
                     rp.Cliente,
-                  rp.Producto,
+                    rp.Producto,
                     rp.Precio,
                     rp.Cantidad,
                     rp.Total,
@@ -117,10 +122,12 @@ namespace CapaAdministador.Controllers
 
             dt.TableName = "Datos";
 
-            using (XLWorkbook wb = new XLWorkbook()){
+            using (XLWorkbook wb = new XLWorkbook())
+            {
 
                 wb.Worksheets.Add(dt);
-                using (MemoryStream strem = new MemoryStream()){
+                using (MemoryStream strem = new MemoryStream())
+                {
                     wb.SaveAs(strem);
                     return File(strem.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "ReporteVentas" + DateTime.Now.ToString() + ".xlsx");
                 }
