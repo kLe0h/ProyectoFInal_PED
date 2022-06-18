@@ -22,6 +22,11 @@ namespace CapaNegocio
             return objCapaDato.OperacionCarrito(idcliente, idproducto, sumar, out Mensaje);
         }
 
+        public int CantidadEnCarrito(int idcliente)
+        {
+            return objCapaDato.CantidadEnCarrito(idcliente);
+        }
+
     }
 
     
