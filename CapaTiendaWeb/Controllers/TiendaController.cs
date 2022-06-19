@@ -17,6 +17,11 @@ namespace CapaTiendaWeb.Controllers
         {
             return View();
         }
+        public ActionResult Carrito()
+        {
+            return View();
+        }
+
 
         [HttpGet]
         public JsonResult ListaCategorias()
@@ -102,7 +107,96 @@ namespace CapaTiendaWeb.Controllers
             return Json(new { cantidad = cantidad }, JsonRequestBehavior.AllowGet);
 
         }
-        
-    
+
+        [HttpPost]
+        public JsonResult ListarProductosCarrito()
+        {
+
+            int idcliente = ((Cliente)Session["Cliente"]).IdCliente;
+
+            List<Carrito> oLista = new List<Carrito>();
+
+            bool conversion;
+
+            oLista = new CN_Carrito().ListarProducto(idcliente).Select(oc => new Carrito()
+            {
+                oProducto = new Producto()
+                {
+                    IdProducto = oc.oProducto.IdProducto,
+                    Nombre = oc.oProducto.Nombre,
+                    oCategoria = oc.oProducto.oCategoria,
+                    Precio = oc.oProducto.Precio,
+                    RutaImagen = oc.oProducto.RutaImagen,
+                    Base64 = CN_Recursos.ConvertirBase64(Path.Combine(oc.oProducto.RutaImagen, oc.oProducto.NombreImagen), out conversion),
+                    Extension = Path.GetExtension(oc.oProducto.NombreImagen)
+
+                },
+                Cantidad = oc.Cantidad
+            }).ToList();
+
+            return Json(new { data = oLista }, JsonRequestBehavior.AllowGet);
+
+        }
+
+
+        [HttpPost]
+        public JsonResult OperacionCarrito(int idproducto, bool sumar)
+        {
+
+            int idcliente = ((Cliente)Session["Cliente"]).IdCliente;
+
+
+            bool respuesta = false;
+
+            string mensaje = string.Empty;
+
+
+            respuesta = new CN_Carrito().OperacionCarrito(idcliente, idproducto, true, out mensaje);
+
+
+            return Json(new { respuesta = respuesta, mensaje = mensaje }, JsonRequestBehavior.AllowGet);
+
+
+        }
+
+        [HttpPost]
+        public JsonResult EliminarCarrito(int idproducto)
+        {
+
+            int idcliente = ((Cliente)Session["Cliente"]).IdCliente;
+
+            bool respuesta = false;
+
+            string mensaje = string.Empty;
+
+            respuesta = new CN_Carrito().EliminarCarrito(idcliente, idproducto);
+
+            return Json(new { respuesta = respuesta, mensaje = mensaje }, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        public JsonResult ObtenerDepartamento()
+        {
+
+            List<Departamento> oLista = new List<Departamento>();
+
+            oLista = new CN_Ubicacion().ObtenerDepartamento();
+
+            return Json(new { lista = oLista }, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        public JsonResult ObtenerZona(string IdDepartamento)
+        {
+
+            List<Zona> oLista = new List<Zona>();
+
+            oLista = new CN_Ubicacion().ObtenerZona(IdDepartamento);
+
+            return Json(new { lista = oLista }, JsonRequestBehavior.AllowGet);
+        }
+
+
+
     }
 }

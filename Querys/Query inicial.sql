@@ -83,3 +83,5 @@ create table zona(
 	Descripcion varchar(45) NOT NULL,
 	IdDepartamento varchar(2) NOT NULL
 )
+
+select * from zona where IdDepartamento = 01

@@ -364,3 +364,56 @@ begin
 	end catch
 end
 go
+
+
+select count(*) from carrito where IdCliente = 1
+go
+
+
+select * from producto;
+go
+
+create FUNCTION fn_obtenerCarritoCliente(
+@idcliente int
+)
+RETURNS TABLE 
+AS
+RETURN 
+(	
+	select p.IdProducto,m.Descripcion[DesCategoria],p.Nombre,p.Precio,c.Cantidad,p.RutaImagen,p.NombreImagen from carrito c
+    inner join producto p on p.IdProducto = c.IdProducto
+    inner join categoria m on m.IdCategoria = p.IdCategoria
+    where c.IdCliente = @idcliente
+)
+go
+
+
+create proc sp_EliminarCarrito(
+@IdCliente int,
+@IdProducto int,
+@Resultado bit output
+)
+as
+begin
+
+	set @Resultado = 1
+	declare @cantidadproducto int = (select Cantidad from CARRITO where IdCliente = @IdCliente and IdProducto = @IdProducto)
+
+	BEGIN TRY
+
+		BEGIN TRANSACTION OPERACION
+
+		update PRODUCTO set Stock = Stock + @cantidadproducto where IdProducto = @IdProducto
+		delete top (1) from CARRITO where IdCliente = @IdCliente and IdProducto = @IdProducto
+
+		COMMIT TRANSACTION OPERACION
+
+	END TRY
+	BEGIN CATCH
+		set @Resultado = 0
+		ROLLBACK TRANSACTION OPERACION
+	END CATCH
+
+end
+
+GO

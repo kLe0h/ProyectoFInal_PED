@@ -134,7 +134,7 @@
 
         function mostrarProductos(_idcategoria) {
 
-                        jQuery.ajax({
+            jQuery.ajax({
                 url:"@Url.Action("ListarProducto", "Tienda")",
                 type: "POST",
                 data: JSON.stringify({ idcategoria: _idcategoria }),
@@ -213,7 +213,7 @@
 
                     if (data.respuesta) {
 
-                        MostrarCantidadCarrito();
+                        mostrarCantidadCarrito();
 
                         swal({
                             title: "Agregado al carrito",
